@@ -25,7 +25,9 @@ def create_app():
                 "documentacion": "/api/auth/",
                 "login": "/api/auth/login",
                 "protegido": "/api/auth/protegido",
-                "negocio_test": "/api/negocio/test"
+                "negocio_test": "/api/negocio/test",
+                "registro_negocio": "/api/auth/registro_negocio",
+                "perfil_negocio": "/api/negocio/perfil_negocio"
             }
         })
 
