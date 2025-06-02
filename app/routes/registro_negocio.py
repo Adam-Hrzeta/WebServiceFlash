@@ -10,7 +10,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-auth_bp = Blueprint('auth', __name__)
+auth_bp = Blueprint('registro_negocio', __name__)
 
 def get_db_connection():
     return pymysql.connect(
