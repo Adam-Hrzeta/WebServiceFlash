@@ -10,7 +10,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-auth_bp = Blueprint('registro_negocio', __name__)
+auth_bp = Blueprint('auth', __name__)
 
 def get_db_connection():
     return pymysql.connect(
@@ -21,7 +21,7 @@ def get_db_connection():
         cursorclass=pymysql.cursors.DictCursor
     )
 
-@auth_bp.route('/registro_negocio', methods=['POST'])
+@auth_bp.route('/auth', methods=['POST'])
 def registro_negocio():
     try:
         data = request.get_json()
