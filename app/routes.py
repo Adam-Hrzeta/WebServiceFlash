@@ -15,7 +15,9 @@ def index():
         "endpoints": {
             "login": "/api/auth/login",
             "protegido": "/api/auth/protegido",
-            "negocio_test": "/api/negocio/test"
+            "negocio_test": "/api/negocio/test",
+            "registro_negocio": "/api/auth/registro_negocio",
+            "perfil_negocio": "/api/negocio/perfil_negocio"
         }
     })
 
@@ -31,6 +33,25 @@ def login():
             }
         }), 200
     return login_usuario()
+
+@auth_bp.route("/registro_negocio", methods=["GET", "POST"])
+def registro_negocio():
+    if request.method == "GET":
+        return jsonify({
+            "status": "info",
+            "mensaje": "Usa POST con JSON para registrar un negocio",
+            "ejemplo": {
+                "nombre": "Panadería La Bendición",
+                "correo": "panaderia@ejemplo.com",
+                "telefono": "5551234567",
+                "direccion": "Av. Principal 123",
+                "descripcion": "Pan recién horneado todos los días",
+                "disponibilidad": "5:00 AM - 9:00 PM",
+                "tipo_entrega": "domicilio",
+                "contrasena": "panconchocolate123"
+            }
+        }), 200
+    return registro_negocio()
 
 @auth_bp.route("/protegido", methods=["GET"])
 @jwt_required()
