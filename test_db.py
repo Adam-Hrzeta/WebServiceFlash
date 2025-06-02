@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 import mysql.connector
-from config import DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT
+from config import Config
 
 def create_app():
     app = Flask(__name__)
@@ -10,11 +10,11 @@ def create_app():
     # Conexión a la base de datos
     def get_db_connection():
         return mysql.connector.connect(
-            host=DB_HOST,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            database=DB_NAME,
-            port=DB_PORT
+            host=Config.DB_HOST,
+            user=Config.DB_USER,
+            password=Config.DB_PASSWORD,
+            database=Config.DB_NAME,
+            port=Config.DB_PORT
         )
 
     # Guardamos la función para que puedas usarla en rutas
@@ -34,11 +34,11 @@ def create_app():
 if __name__ == '__main__':
     try:
         conexion = mysql.connector.connect(
-            host=DB_HOST,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            database=DB_NAME,
-            port=DB_PORT
+            host=Config.DB_HOST,
+            user=Config.DB_USER,
+            password=Config.DB_PASSWORD,
+            database=Config.DB_NAME,
+            port=Config.DB_PORT
         )
         if conexion.is_connected():
             print("✅ ¡Conectado a MySQL exitosamente!")

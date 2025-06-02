@@ -30,7 +30,8 @@ def create_app():
         })
 
     # Registrar blueprints
-    from .routes import auth_bp, negocio_bp
+    from app.routes.auth_controller import auth_bp
+    from app.routes.negocio_controller import negocio_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(negocio_bp, url_prefix='/api/negocio')

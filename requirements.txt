@@ -1,0 +1,11 @@
+# Requerimientos para el backend Flask
+Flask
+Flask-Cors
+Flask-JWT-Extended
+python-dotenv
+PyMySQL
+mysql-connector-python
+passlib
+bcrypt
+pydantic
+Werkzeug

@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify, Blueprint
 from flask_jwt_extended import (
     create_access_token, 
     create_refresh_token,
@@ -121,3 +121,8 @@ def login():
     finally:
         if conn:
             conn.close()
+
+auth_bp = Blueprint('auth_bp', __name__)
+
+auth_bp.add_url_rule('/registro', view_func=registro, methods=['POST'])
+auth_bp.add_url_rule('/login', view_func=login, methods=['POST'])
