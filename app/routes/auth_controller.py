@@ -103,15 +103,14 @@ def registroCliente():
             
             sql = """
                 INSERT INTO Cliente 
-                (nombre, correo, contrasena, telefono, direccion, fecha_nacimiento)
+                (nombre, correo, telefono, contrasena, fecha_nacimiento)
                 VALUES (%s, %s, %s, %s, %s)
             """
             cursor.execute(sql, (
                 data['nombre'],
                 data['correo'],
-                hashed_pw,
                 data.get('telefono', ''),
-                data.get('direccion', ''),
+                hashed_pw,
                 data.get('fecha_nacimiento', None)
             ))
             conn.commit()
