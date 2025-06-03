@@ -24,6 +24,7 @@ def create_app():
             "endpoints": {
                 "documentacion": "/api/auth/",
                 "login": "/api/auth/login",
+                "registro": "/api/auth/registro",
                 "protegido": "/api/auth/protegido",
                 "negocio_test": "/api/negocio/test",
             }

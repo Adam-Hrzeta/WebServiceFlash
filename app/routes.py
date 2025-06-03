@@ -1,1 +1,0 @@
-# Este archivo ha sido vaciado porque la gestión de rutas y blueprints se realiza en los controladores y en __init__.py.
