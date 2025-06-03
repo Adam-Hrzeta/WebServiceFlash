@@ -109,7 +109,8 @@ def login():
                     'id': negocio['id'],
                     'nombre': negocio['nombre'],
                     'correo': negocio['correo']
-                }
+                },
+                'tipo_usuario': 'negocio'
             }), 200
 
     except pymysql.MySQLError as e:
