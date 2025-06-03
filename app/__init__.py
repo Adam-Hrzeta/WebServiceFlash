@@ -18,13 +18,14 @@ def create_app():
     @app.route('/')
     def root():
         return jsonify({
-            "status": "success",
-            "mensaje": "Bienvenido a la API",
+            "status": "Web Service Funcionando Correctamente",
+            "mensaje": "Web service de la aplicación FlashEnd",
             "documentacion": "Para ver la documentación completa, visita /api/auth/",
             "endpoints": {
                 "documentacion": "/api/auth/",
                 "login": "/api/auth/login",
-                "registro": "/api/auth/registro",
+                "registro Negocio": "/api/auth/registro_Negocio",
+                "Registro Cliente": "/api/auth/registro_Cliente",
                 "protegido": "/api/auth/protegido",
                 "negocio_test": "/api/negocio/test",
             }
