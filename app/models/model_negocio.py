@@ -12,7 +12,7 @@ class NegocioBase(BaseModel):
     tipo_entrega: str
 
 class NegocioCreate(NegocioBase):
-    contrasena: constr(min_length=8)
+    contrasena: constr
 
 class NegocioLogin(BaseModel):
     correo: EmailStr
