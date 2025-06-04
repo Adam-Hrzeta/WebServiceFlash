@@ -26,6 +26,7 @@ def create_app():
                 "login": "/api/auth/login",
                 "registro Negocio": "/api/auth/registro_Negocio",
                 "Registro Cliente": "/api/auth/registro_Cliente",
+                "Registro Repartidor": "/api/auth/registro_Repartidor",
                 "protegido": "/api/auth/protegido",
                 "negocio_test": "/api/negocio/test",
             }
@@ -33,7 +34,7 @@ def create_app():
 
     # Registrar blueprints
     from app.routes.auth_controller import auth_bp
-    from app.routes.negocio_controller import negocio_bp
+    from app.routes.Perfil_negocio_controller import negocio_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(negocio_bp, url_prefix='/api/negocio')

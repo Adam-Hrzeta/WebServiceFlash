@@ -126,6 +126,59 @@ def registroCliente():
         if conn:
             conn.close()
 
+def registroRepartidor():
+    import traceback
+    conn = None
+    try:
+        data = request.get_json()
+        
+        required_fields = ['nombre', 'correo', 'contrasena']
+        if not all(field in data for field in required_fields):
+            return jsonify({'error': 'Faltan campos obligatorios: nombre, correo, contrasena'}), 400
+
+        if not is_valid_email(data['correo']):
+            return jsonify({'error': 'Formato de correo inválido'}), 400
+
+        if len(data['contrasena']) < 8:
+            return jsonify({'error': 'La contraseña debe tener al menos 8 caracteres'}), 400
+
+        hashed_pw = generate_password_hash(data['contrasena'])
+        
+        conn = get_db()
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT id FROM Repartidor WHERE correo = %s", (data['correo'],))
+            if cursor.fetchone():
+                return jsonify({'error': 'El correo ya está registrado'}), 409
+            
+            sql = """
+                INSERT INTO Repartidor 
+                (nombre, correo, telefono, fecha_nacimiento, contrasena, disponibilidad, tipo_servicio)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(sql, (
+                data['nombre'],
+                data['correo'],
+                data.get('telefono', ''),
+                data.get('fecha_nacimiento', ''),
+                hashed_pw,
+                data.get('disponibilidad', ''),
+                data.get('tipo_servicio', 'Cuenta Propia' if 'empresa' not in data else 'Empresa')
+            ))
+            conn.commit()
+            
+            return jsonify({'mensaje': 'Registro exitoso'}), 201
+
+    except pymysql.MySQLError as e:
+        logger.error(f"Error de MySQL en registro: {str(e)}")
+        return jsonify({'error': 'Error en la base de datos', 'detalle': str(e), 'traceback': traceback.format_exc()}), 500
+    except Exception as e:
+        logger.error(f"Error en registro: {str(e)}")
+        return jsonify({'error': 'Error en el servidor', 'detalle': str(e), 'traceback': traceback.format_exc()}), 500
+    finally:
+        if conn:
+            conn.close()
+
+
 def login():
     conn = None
     try:
@@ -197,4 +250,5 @@ auth_bp = Blueprint('auth_bp', __name__)
 
 auth_bp.add_url_rule('/registro_Cliente', view_func=registroCliente, methods=['POST'])
 auth_bp.add_url_rule('/registro_Negocio', view_func=registroNegocio, methods=['POST'])
+auth_bp.add_url_rule('/registro_Repartidor', view_func=registroRepartidor, methods=['POST'])
 auth_bp.add_url_rule('/login', view_func=login, methods=['POST'])
