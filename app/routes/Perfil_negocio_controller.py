@@ -11,7 +11,6 @@ def test():
 
 @negocio_bp.route('/profile', methods=['GET'])
 def negocio_profile():
-    # Datos dummy de negocio y productos
     negocio = {
         'id': 1,
         'nombre': 'FlashEnt Pizza',
