@@ -28,6 +28,7 @@ def is_valid_email(email):
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return re.match(pattern, email) is not None
 
+#REGISTRO DE NEGOCIO
 def registroNegocio():
     conn = None
     try:
@@ -78,6 +79,7 @@ def registroNegocio():
         if conn:
             conn.close()
 
+#REGISTRO DE CLIENTE
 def registroCliente():
     conn = None
     try:
@@ -126,6 +128,7 @@ def registroCliente():
         if conn:
             conn.close()
 
+#REGISTRO DE REPARTIDOR
 def registroRepartidor():
     import traceback
     conn = None
@@ -178,7 +181,7 @@ def registroRepartidor():
         if conn:
             conn.close()
 
-
+#INICIO DE SESIÓN PARA TODOS LOS USUARIOS
 def login():
     conn = None
     try:

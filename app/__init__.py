@@ -34,16 +34,15 @@ def create_app():
 
     # Registrar blueprints
     from app.routes.auth_controller import auth_bp
-    from app.routes.Perfil_negocio_controller import negocio_bp
+    from app.routes.perfil_negocio_controller import negocio_bp
     from app.routes.perfil_cliente_controller import cliente_bp
-    from app.routes.Perfil_repartidor_controller import repartidor_bp
-    from app.routes.user_controller import user_bp
+    from app.routes.perfil_repartidor_controller import repartidor_bp
+
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(negocio_bp, url_prefix='/api/negocio')
     app.register_blueprint(cliente_bp, url_prefix='/api/cliente')
     app.register_blueprint(repartidor_bp, url_prefix='/api/repartidor')
-    app.register_blueprint(user_bp, url_prefix='/api/auth')
 
 
     # Manejo de errores

@@ -9,7 +9,7 @@ def test():
         'mensaje': 'Ruta de negocio funcionando'
     })
 
-@negocio_bp.route('/profile', methods=['GET'])
+@negocio_bp.route('/profileNegocio', methods=['GET'])
 def negocio_profile():
     negocio = {
         'id': 1,

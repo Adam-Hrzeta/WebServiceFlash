@@ -41,7 +41,7 @@ if __name__ == '__main__':
             port=Config.DB_PORT
         )
         if conexion.is_connected():
-            print("✅ ¡Conectado a MySQL exitosamente!")
+            print("¡Conectado a MySQL exitosamente!")
             conexion.close()
     except Exception as e:
-        print("❌ Error al conectar:", e)
+        print("Error al conectar:", e)
