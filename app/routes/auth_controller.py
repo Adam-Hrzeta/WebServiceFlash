@@ -231,15 +231,36 @@ def login():
                     },
                     'tipo_usuario': 'cliente' 
                 }), 200
+            # Si no es cliente, buscar en Repartidor
+            cursor.execute("SELECT * FROM Repartidor WHERE correo = %s", (data['correo'],))
+            repartidor = cursor.fetchone()
+            if repartidor and check_password_hash(repartidor['contrasena'], data['contrasena']):
+                identity = {
+                    'id': repartidor['id'],
+                    'correo': repartidor['correo'],
+                    'tipo_usuario': 'repartidor'
+                }
+                access_token = create_access_token(identity=identity)
+                refresh_token = create_refresh_token(identity=identity)
+                return jsonify({
+                    'access_token': access_token,
+                    'refresh_token': refresh_token,
+                    'repartidor': {
+                        'id': repartidor['id'],
+                        'nombre': repartidor['nombre'],
+                        'correo': repartidor['correo']
+                    },
+                    'tipo_usuario': 'repartidor' 
+                }), 200
             # Si no se encontró en ninguna tabla
             return jsonify({'error': 'Credenciales inválidas'}), 401
 
     except pymysql.MySQLError as e:
         logger.error(f"Error de MySQL en login: {str(e)}")
-        return jsonify({'error': 'Error en la base de datos'}), 500
+        return jsonify({'error': 'Error en la base de datos', 'detalle': str(e)}), 500
     except Exception as e:
         logger.error(f"Error en login: {str(e)}")
-        return jsonify({'error': 'Error en el servidor'}), 500
+        return jsonify({'error': 'Error en el servidor', 'detalle': str(e)}), 500
     finally:
         if conn:
             conn.close()
