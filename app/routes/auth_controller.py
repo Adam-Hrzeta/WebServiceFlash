@@ -3,7 +3,8 @@ from flask_jwt_extended import (
     create_access_token, 
     create_refresh_token,
     jwt_required,
-    get_jwt_identity
+    get_jwt_identity,
+    get_jwt
 )
 import pymysql
 from config import Config
@@ -28,7 +29,7 @@ def is_valid_email(email):
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return re.match(pattern, email) is not None
 
-#REGISTRO DE NEGOCIO
+# REGISTRO DE NEGOCIO
 def registroNegocio():
     conn = None
     try:
@@ -79,7 +80,7 @@ def registroNegocio():
         if conn:
             conn.close()
 
-#REGISTRO DE CLIENTE
+# REGISTRO DE CLIENTE
 def registroCliente():
     conn = None
     try:
@@ -128,7 +129,7 @@ def registroCliente():
         if conn:
             conn.close()
 
-#REGISTRO DE REPARTIDOR
+# REGISTRO DE REPARTIDOR
 def registroRepartidor():
     import traceback
     conn = None
@@ -181,7 +182,7 @@ def registroRepartidor():
         if conn:
             conn.close()
 
-#INICIO DE SESIÓN PARA TODOS LOS USUARIOS
+# INICIO DE SESIÓN PARA TODOS LOS USUARIOS
 def login():
     conn = None
     try:
@@ -196,13 +197,13 @@ def login():
             cursor.execute("SELECT * FROM Negocio WHERE correo = %s", (data['correo'],))
             negocio = cursor.fetchone()
             if negocio and check_password_hash(negocio['contrasena'], data['contrasena']):
-                identity = {
-                    'id': negocio['id'],
+                identity = str(negocio['id'])
+                additional_claims = {
                     'correo': negocio['correo'],
                     'tipo_usuario': 'negocio'
                 }
-                access_token = create_access_token(identity=identity)
-                refresh_token = create_refresh_token(identity=identity)
+                access_token = create_access_token(identity=identity, additional_claims=additional_claims)
+                refresh_token = create_refresh_token(identity=identity, additional_claims=additional_claims)
                 return jsonify({
                     'access_token': access_token,
                     'refresh_token': refresh_token,
@@ -217,13 +218,13 @@ def login():
             cursor.execute("SELECT * FROM Cliente WHERE correo = %s", (data['correo'],))
             cliente = cursor.fetchone()
             if cliente and check_password_hash(cliente['contrasena'], data['contrasena']):
-                identity = {
-                    'id': cliente['id'],
+                identity = str(cliente['id'])
+                additional_claims = {
                     'correo': cliente['correo'],
                     'tipo_usuario': 'cliente'
                 }
-                access_token = create_access_token(identity=identity)
-                refresh_token = create_refresh_token(identity=identity)
+                access_token = create_access_token(identity=identity, additional_claims=additional_claims)
+                refresh_token = create_refresh_token(identity=identity, additional_claims=additional_claims)
                 return jsonify({
                     'access_token': access_token,
                     'refresh_token': refresh_token,
@@ -238,13 +239,13 @@ def login():
             cursor.execute("SELECT * FROM Repartidor WHERE correo = %s", (data['correo'],))
             repartidor = cursor.fetchone()
             if repartidor and check_password_hash(repartidor['contrasena'], data['contrasena']):
-                identity = {
-                    'id': repartidor['id'],
+                identity = str(repartidor['id'])
+                additional_claims = {
                     'correo': repartidor['correo'],
                     'tipo_usuario': 'repartidor'
                 }
-                access_token = create_access_token(identity=identity)
-                refresh_token = create_refresh_token(identity=identity)
+                access_token = create_access_token(identity=identity, additional_claims=additional_claims)
+                refresh_token = create_refresh_token(identity=identity, additional_claims=additional_claims)
                 return jsonify({
                     'access_token': access_token,
                     'refresh_token': refresh_token,
@@ -267,8 +268,6 @@ def login():
     finally:
         if conn:
             conn.close()
-
-
 
 auth_bp = Blueprint('auth_bp', __name__)
 
