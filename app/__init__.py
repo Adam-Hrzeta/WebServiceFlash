@@ -39,6 +39,10 @@ def create_app():
     from app.routes.perfil_cliente_controller import perfil_cliente_bp
     from app.routes.perfil_repartidor_controller import perfil_repartidor_bp
     from app.routes.dashboard_mostrar_negocios_controller import dashboard_mostrar_negocios_bp
+    #implementar el blue print para el que el cliente pueda ver un negocio individual y poder hacer pedidos
+    from app.routes.dashboard_mostrar_negocios_individual_controller import dashboard_mostrar_negocios_individual_bp
+    #implementar el blue print para que el repartidor pueda ver los pedidos que tiene asignados
+    from app.routes.dashboard_mostrar_pedidos_asignados_repartidor_controller import dashboard_mostrar_pedidos_repartidor_bp  
 
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
