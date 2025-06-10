@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 import pymysql
 from config import Config
 
-cliente_bp = Blueprint('cliente_bp', __name__)
+perfil_cliente_bp = Blueprint('perfil_cliente_bp', __name__)
 
 def get_db():
     return pymysql.connect(
@@ -14,7 +14,7 @@ def get_db():
         cursorclass=pymysql.cursors.DictCursor
     )
 
-@cliente_bp.route('/profileCliente', methods=['GET'])
+@perfil_cliente_bp.route('/perfilCliente', methods=['GET'])
 @jwt_required()
 def cliente_profile():
     identity = get_jwt_identity()  # Esto es el id (string)

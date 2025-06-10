@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 import pymysql
 from config import Config
 
-repartidor_bp = Blueprint('repartidor_bp', __name__)
+perfil_repartidor_bp = Blueprint('perfil_repartidor_bp', __name__)
 
 def get_db():
     return pymysql.connect(
@@ -14,14 +14,14 @@ def get_db():
         cursorclass=pymysql.cursors.DictCursor
     )
 
-@repartidor_bp.route('/test', methods=['GET'])
+@perfil_repartidor_bp.route('/test', methods=['GET'])
 def test():
     return jsonify({
         'status': 'success',
         'mensaje': 'Ruta de repartidor funcionando'
     })
 
-@repartidor_bp.route('/profileRepartidor', methods=['GET'])
+@perfil_repartidor_bp.route('/perfilRepartidor', methods=['GET'])
 @jwt_required()
 def repartidor_profile():
     identity = get_jwt_identity()

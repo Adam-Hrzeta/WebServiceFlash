@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 import pymysql
 from config import Config
 
-negocio_bp = Blueprint('negocio_bp', __name__)
+perfil_negocio_bp = Blueprint('perfil_negocio_bp', __name__)
 
 def get_db():
     return pymysql.connect(
@@ -14,14 +14,14 @@ def get_db():
         cursorclass=pymysql.cursors.DictCursor
     )
 
-@negocio_bp.route('/test', methods=['GET'])
+@perfil_negocio_bp.route('/test', methods=['GET'])
 def test():
     return jsonify({
         'status': 'success',
         'mensaje': 'Ruta de negocio funcionando'
     })
 
-@negocio_bp.route('/profileNegocio', methods=['GET'])
+@perfil_negocio_bp.route('/perfilNegocio', methods=['GET'])
 @jwt_required()
 def negocio_profile():
     identity = get_jwt_identity()

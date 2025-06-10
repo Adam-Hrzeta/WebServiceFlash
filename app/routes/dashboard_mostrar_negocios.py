@@ -2,9 +2,9 @@ from flask import Blueprint, jsonify, request
 from mysql.connector import connect, Error
 from config import Config
 
-dashboard_bp = Blueprint('dashboard_bp', __name__)
+dashboard_mostrar_negocios_bp = Blueprint('dashboard_mostrar_negocios_bp', __name__)
 
-dashboard_bp.route('/dashboard_negocios', methods=['GET'])
+dashboard_mostrar_negocios_bp.route('/dashboard_mostrar_Negocios', methods=['GET'])
 
 def get_db_connection():
     try:
@@ -19,14 +19,14 @@ def get_db_connection():
         print(f"Error al conectar a MySQL: {e}")
         return None
 
-@dashboard_bp.route('/test', methods=['GET'])
+@dashboard_mostrar_negocios_bp.route('/test', methods=['GET'])
 def test():
     return jsonify({
         'status': 'success',
         'mensaje': 'Ruta de negocio funcionando'
     })
 
-@dashboard_bp.route('/dashboard_negocios', methods=['GET'])
+@dashboard_mostrar_negocios_bp.route('/dashboard_negocios', methods=['GET'])
 def obtener_negocios():
     connection = get_db_connection()
     if not connection:
@@ -59,7 +59,7 @@ def obtener_negocios():
         cursor.close()
         connection.close()
 
-@dashboard_bp.route('/negocio/<int:id>', methods=['GET'])
+@dashboard_mostrar_negocios_bp.route('/negocio/<int:id>', methods=['GET'])
 def obtener_negocio(id):
     connection = get_db_connection()
     if not connection:
@@ -99,7 +99,7 @@ def obtener_negocio(id):
         cursor.close()
         connection.close()
 
-@dashboard_bp.route('/negocio', methods=['POST'])
+@dashboard_mostrar_negocios_bp.route('/negocio', methods=['POST'])
 def crear_negocio():
     data = request.get_json()
     if not data:

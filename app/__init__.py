@@ -22,30 +22,30 @@ def create_app():
             "mensaje": "Web service de la aplicación FlashEnd",
             "documentacion": "Para ver la documentación completa, visita /api/auth/",
             "endpoints": {
-                "documentacion": "/api/auth/",
-                "login": "/api/auth/login",
-                "registro Negocio": "/api/auth/registro_Negocio",
+                "Inicio de sesión": "/api/auth/login",
+                "Registro Negocio": "/api/auth/registro_Negocio",
                 "Registro Cliente": "/api/auth/registro_Cliente",
                 "Registro Repartidor": "/api/auth/registro_Repartidor",
-                "protegido": "/api/auth/protegido",
-                "negocio_test": "/api/negocio/test",
-                "dashboard": "/api/dashboard/dashboard_negocios",
+                "Perfil Negocio": "/api/perfilNegocio/perfil_negocio",
+                "Perfil Cliente": "/api/perfilCliente/perfil_cliente",
+                "Perfil Repartidor": "/api/perfilRepartidor/perfil_repartidor",
+                "Dashboard (mostrar negocios a los usuarios)": "/api/dashboard/dashboard_negocios",
             }
         })
 
     # Registrar blueprints
     from app.routes.auth_controller import auth_bp
-    from app.routes.perfil_negocio_controller import negocio_bp
-    from app.routes.perfil_cliente_controller import cliente_bp
-    from app.routes.perfil_repartidor_controller import repartidor_bp
-    from app.routes.dashboard import dashboard_bp
+    from app.routes.perfil_negocio_controller import perfil_negocio_bp
+    from app.routes.perfil_cliente_controller import perfil_cliente_bp
+    from app.routes.perfil_repartidor_controller import perfil_repartidor_bp
+    from routes.dashboard_mostrar_negocios import dashboard_mostrar_negocios_bp
 
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
-    app.register_blueprint(negocio_bp, url_prefix='/api/negocio')
-    app.register_blueprint(cliente_bp, url_prefix='/api/cliente')
-    app.register_blueprint(repartidor_bp, url_prefix='/api/repartidor')
-    app.register_blueprint(dashboard_bp, url_prefix='/api/dashboard')
+    app.register_blueprint(perfil_negocio_bp, url_prefix='/api/perfilNegocio')
+    app.register_blueprint(perfil_cliente_bp, url_prefix='/api/perfilCliente')
+    app.register_blueprint(perfil_repartidor_bp, url_prefix='/api/perfilRepartidor')
+    app.register_blueprint(dashboard_mostrar_negocios_bp, url_prefix='/api/dashboard_mostrar_negocios')
 
 
     # Manejo de errores
