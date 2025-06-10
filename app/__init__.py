@@ -29,6 +29,7 @@ def create_app():
                 "Registro Repartidor": "/api/auth/registro_Repartidor",
                 "protegido": "/api/auth/protegido",
                 "negocio_test": "/api/negocio/test",
+                "dashboard": "/api/dashboard/dashboard_negocios",
             }
         })
 
@@ -37,12 +38,14 @@ def create_app():
     from app.routes.perfil_negocio_controller import negocio_bp
     from app.routes.perfil_cliente_controller import cliente_bp
     from app.routes.perfil_repartidor_controller import repartidor_bp
+    from app.routes.dashboard import dashboard_bp
 
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(negocio_bp, url_prefix='/api/negocio')
     app.register_blueprint(cliente_bp, url_prefix='/api/cliente')
     app.register_blueprint(repartidor_bp, url_prefix='/api/repartidor')
+    app.register_blueprint(dashboard_bp, url_prefix='/api/dashboard')
 
 
     # Manejo de errores
