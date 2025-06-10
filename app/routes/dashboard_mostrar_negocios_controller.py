@@ -4,7 +4,7 @@ from config import Config
 
 dashboard_mostrar_negocios_bp = Blueprint('dashboard_mostrar_negocios_bp', __name__)
 
-dashboard_mostrar_negocios_bp.route('/dashboard_mostrar_Negocios', methods=['GET'])
+dashboard_mostrar_negocios_bp.route('/dashboard_mostrar_negocios', methods=['GET'])
 
 def get_db_connection():
     try:

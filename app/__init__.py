@@ -38,7 +38,7 @@ def create_app():
     from app.routes.perfil_negocio_controller import perfil_negocio_bp
     from app.routes.perfil_cliente_controller import perfil_cliente_bp
     from app.routes.perfil_repartidor_controller import perfil_repartidor_bp
-    from routes.dashboard_mostrar_negocios import dashboard_mostrar_negocios_bp
+    from app.routes.dashboard_mostrar_negocios_controller import dashboard_mostrar_negocios_bp
 
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
