@@ -34,23 +34,16 @@ def negocio_profile():
     try:
         with conn.cursor() as cursor:
             cursor.execute(
-                "SELECT id, nombre, categoria, telefono, correo, descripcion, cover_photo FROM Negocio WHERE id = %s",
+                "SELECT id, nombre, categoria, telefono, correo, descripcion FROM Negocio WHERE id = %s",
                 (identity,)
             )
             negocio = cursor.fetchone()
+
             if not negocio:
                 return jsonify({'error': 'Negocio no encontrado'}), 404
-            negocio['avatar'] = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
-
-            cursor.execute(
-                "SELECT id, nombre, descripcion, precio, imagen_url FROM Producto WHERE negocio_id = %s",
-                (identity,)
-            )
-            productos = cursor.fetchall()
 
             return jsonify({
-                'negocio': negocio,
-                'productos': productos
+                'negocio': negocio
             })
     finally:
         conn.close()

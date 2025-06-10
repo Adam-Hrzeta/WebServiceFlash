@@ -35,9 +35,9 @@ def registroNegocio():
     try:
         data = request.get_json()
         
-        required_fields = ['nombre', 'correo', 'contrasena']
+        required_fields = ['nombre', 'correo', 'contrasena', 'categoria']
         if not all(field in data for field in required_fields):
-            return jsonify({'error': 'Faltan campos obligatorios: nombre, correo, contrasena'}), 400
+            return jsonify({'error': 'Faltan campos obligatorios: nombre, correo, contrasena, categoria'}), 400
 
         if not is_valid_email(data['correo']):
             return jsonify({'error': 'Formato de correo inválido'}), 400
@@ -55,8 +55,8 @@ def registroNegocio():
             
             sql = """
                 INSERT INTO Negocio 
-                (nombre, correo, contrasena, telefono, direccion, descripcion)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                (nombre, correo, contrasena, telefono, direccion, descripcion, categoria)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
             """
             cursor.execute(sql, (
                 data['nombre'],
@@ -64,7 +64,8 @@ def registroNegocio():
                 hashed_pw,
                 data.get('telefono', ''),
                 data.get('direccion', ''),
-                data.get('descripcion', '')
+                data.get('descripcion', ''),
+                data['categoria']
             ))
             conn.commit()
             

@@ -10,6 +10,7 @@ class NegocioBase(BaseModel):
     descripcion: Optional[str] = None
     disponibilidad: bool = True
     tipo_entrega: str
+    categoria: str
 
 class NegocioCreate(NegocioBase):
     contrasena: constr
