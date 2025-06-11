@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify
 from mysql.connector import connect, Error
 from config import Config
 
-producto_publico_bp = Blueprint('producto_publico_bp', __name__)
+negocioyProductos_dashboardClientes_bp = Blueprint('negocioyProductos_dashboardClientes_bp', __name__)
 
 def get_db_connection():
     try:
@@ -17,7 +17,7 @@ def get_db_connection():
         print(f"Error al conectar a MySQL: {e}")
         return None
 
-@producto_publico_bp.route('/public_profile/<int:negocio_id>', methods=['GET'])
+@negocioyProductos_dashboardClientes_bp.route('/negocioyProductos/<int:negocio_id>', methods=['GET'])
 def public_profile_negocio(negocio_id):
     connection = get_db_connection()
     if not connection:
