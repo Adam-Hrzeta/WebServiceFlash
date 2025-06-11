@@ -26,10 +26,10 @@ def create_app():
                 "Registro Negocio": "/api/auth/registro_Negocio",
                 "Registro Cliente": "/api/auth/registro_Cliente",
                 "Registro Repartidor": "/api/auth/registro_Repartidor",
-                "Perfil Negocio": "/api/perfilNegocio/perfil_negocio",
-                "Perfil Cliente": "/api/perfilCliente/perfil_cliente",
-                "Perfil Repartidor": "/api/perfilRepartidor/perfil_repartidor",
-                "Dashboard (mostrar negocios a los usuarios)": "/api/dashboard/dashboard_negocios",
+                "Perfil Negocio": "/api/perfilNegocio/perfilNegocio",
+                "Perfil Cliente": "/api/perfilCliente/perfilCliente",
+                "Perfil Repartidor": "/api/perfilRepartidor/perfilRepartidor",
+                "Dashboard (mostrar negocios a los usuarios)": "/api/dashboard_mostrar_negocios/dashboard_negocios",
             }
         })
 
@@ -39,10 +39,6 @@ def create_app():
     from app.routes.perfil_cliente_controller import perfil_cliente_bp
     from app.routes.perfil_repartidor_controller import perfil_repartidor_bp
     from app.routes.dashboard_mostrar_negocios_controller import dashboard_mostrar_negocios_bp
-    #implementar el blue print para el que el cliente pueda ver un negocio individual y poder hacer pedidos
-    from app.routes.dashboard_mostrar_negocios_individual_controller import dashboard_mostrar_negocios_individual_bp
-    #implementar el blue print para que el repartidor pueda ver los pedidos que tiene asignados
-    from app.routes.dashboard_mostrar_pedidos_asignados_repartidor_controller import dashboard_mostrar_pedidos_repartidor_bp  
 
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
