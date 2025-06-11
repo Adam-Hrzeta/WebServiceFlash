@@ -35,12 +35,12 @@ def create_app():
         })
 
     # Registrar blueprints
-    from app.routes.auth_controller import auth_bp
-    from app.routes.perfil_negocio_controller import perfil_negocio_bp
-    from app.routes.perfil_cliente_controller import perfil_cliente_bp
-    from app.routes.perfil_repartidor_controller import perfil_repartidor_bp
-    from app.routes.dashboard_mostrar_negocios_controller import dashboard_mostrar_negocios_bp
-    from app.routes.DashboardCliente.negocioyProductos_cliente import negocioyProductos_dashboardClientes_bp
+    from app.routes.autenticacion.auth_controller import auth_bp
+    from app.routes.perfiles.perfil_negocio_controller import perfil_negocio_bp
+    from app.routes.perfiles.perfil_cliente_controller import perfil_cliente_bp
+    from app.routes.perfiles.perfil_repartidor_controller import perfil_repartidor_bp
+    from app.routes.dashboardCliente.dashboard_mostrar_negocios_controller import dashboard_mostrar_negocios_bp
+    from app.routes.dashboardCliente.negocioyProductos_cliente import negocioyProductos_dashboardClientes_bp
 
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
