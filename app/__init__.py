@@ -29,6 +29,7 @@ def create_app():
                 "Perfil Negocio": "/api/perfilNegocio/perfilNegocio",
                 "Perfil Cliente": "/api/perfilCliente/perfilCliente",
                 "Perfil Repartidor": "/api/perfilRepartidor/perfilRepartidor",
+                "Editar Perfil Repartidor": "/api/perfilRepartidor/editarPerfil",
                 "Dashboard (mostrar negocios a los usuarios)": "/api/dashboard_mostrar_negocios/dashboard_negocios",
                 "Mostrar perfil de negocio a clientes y productos (Dashboard)": "/api/negocioyProductos"
             }
@@ -41,7 +42,6 @@ def create_app():
     from app.routes.perfiles.perfil_repartidor_controller import perfil_repartidor_bp
     from app.routes.dashboardCliente.dashboard_mostrar_negocios_controller import dashboard_mostrar_negocios_bp
     from app.routes.dashboardCliente.negocioyProductos_cliente import negocioyProductos_dashboardClientes_bp
-
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(perfil_negocio_bp, url_prefix='/api/perfilNegocio')
