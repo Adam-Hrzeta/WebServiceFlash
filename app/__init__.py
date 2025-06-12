@@ -14,7 +14,7 @@ def create_app():
     CORS(app)
     jwt.init_app(app)
 
-    # Ruta raíz
+    # Ruta raíz (aqui se ponen los endpoints disponibles, primero el prefijo de API, luego el nombre del archivo y la función)
     @app.route('/')
     def root():
         return jsonify({
@@ -35,7 +35,7 @@ def create_app():
             }
         })
 
-    # Registrar blueprints
+    # Registrar blueprints (es decir los archivos de python)
     from app.routes.autenticacion.auth_controller import auth_bp
     from app.routes.perfiles.perfil_negocio_controller import perfil_negocio_bp
     from app.routes.perfiles.perfil_cliente_controller import perfil_cliente_bp
