@@ -29,6 +29,9 @@ def is_valid_email(email):
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return re.match(pattern, email) is not None
 
+# Definir blueprint al inicio para evitar NameError
+auth_bp = Blueprint('auth_bp', __name__)
+
 # REGISTRO DE NEGOCIO
 def registroNegocio():
     conn = None
@@ -270,8 +273,18 @@ def login():
         if conn:
             conn.close()
 
-auth_bp = Blueprint('auth_bp', __name__)
+# Blacklist simple en memoria para tokens JWT
+jwt_blacklist = set()
 
+# Endpoint logout
+@auth_bp.route('/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]
+    jwt_blacklist.add(jti)
+    return jsonify({"mensaje": "Sesión cerrada correctamente"}), 200
+
+# Registrar endpoints
 auth_bp.add_url_rule('/registro_Cliente', view_func=registroCliente, methods=['POST'])
 auth_bp.add_url_rule('/registro_Negocio', view_func=registroNegocio, methods=['POST'])
 auth_bp.add_url_rule('/registro_Repartidor', view_func=registroRepartidor, methods=['POST'])
