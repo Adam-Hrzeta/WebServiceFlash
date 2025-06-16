@@ -13,4 +13,4 @@ class ProductoResponse(ProductoBase):
     fecha_creacion: datetime
 
     class Config:
-        from_attributes = True  # Permite que los atributos se carguen desde el modelo de Pydantic
+        from_attributes = True 
