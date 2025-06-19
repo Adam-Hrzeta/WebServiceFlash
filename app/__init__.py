@@ -49,6 +49,7 @@ def create_app():
     from app.routes.dashboardCliente.dashboard_mostrar_negocios_controller import dashboard_mostrar_negocios_bp
     from app.routes.dashboardCliente.negocioyProductos_cliente import negocioyProductos_dashboardClientes_bp
     from app.routes.dashboardNegocio.productos_controller import productos_bp
+    from app.routes.dashboardRepartidor.pedidos_repartidor_controller import pedidos_repartidor_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(perfil_negocio_bp, url_prefix='/api/perfilNegocio')
@@ -57,6 +58,7 @@ def create_app():
     app.register_blueprint(dashboard_mostrar_negocios_bp, url_prefix='/api/dashboard_mostrar_negocios')
     app.register_blueprint(negocioyProductos_dashboardClientes_bp, url_prefix='/api/negocioyProductos')
     app.register_blueprint(productos_bp, url_prefix='/api/productos')
+    app.register_blueprint(pedidos_repartidor_bp, url_prefix='/api/pedidos')
 
 
     # Manejo de errores
