@@ -75,7 +75,7 @@ def negocio_profile():
     conn = get_db()
     try:
         with conn.cursor() as cursor:
-            cursor.execute("SELECT id, nombre, categoria, telefono, correo, descripcion, profile_image FROM Negocio WHERE id = %s", (identity,))
+            cursor.execute("SELECT id, nombre, categoria, telefono, correo, descripcion, direccion, profile_image FROM Negocio WHERE id = %s", (identity,))
             negocio = cursor.fetchone()
 
             if not negocio:
