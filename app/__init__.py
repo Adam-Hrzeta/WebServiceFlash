@@ -7,7 +7,7 @@ from app.routes.autenticacion.auth_controller import jwt_blacklist
 
 jwt = JWTManager()
 
-@jwt.token_in_blocklist_loader
+@jwt.token_in_blocklist_loader  # Corregido el nombre del decorador
 def check_if_token_in_blacklist(jwt_header, jwt_payload):
     jti = jwt_payload["jti"]
     return jti in jwt_blacklist
@@ -50,6 +50,7 @@ def create_app():
     from app.routes.dashboardCliente.negocioyProductos_cliente import negocioyProductos_dashboardClientes_bp
     from app.routes.dashboardNegocio.productos_controller import productos_bp
     from app.routes.dashboardRepartidor.pedidos_repartidor_controller import pedidos_repartidor_bp
+    from app.routes.dashboardAdmin.dashboard_admin_controller import dashboard_admin_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(perfil_negocio_bp, url_prefix='/api/perfilNegocio')
@@ -59,6 +60,7 @@ def create_app():
     app.register_blueprint(negocioyProductos_dashboardClientes_bp, url_prefix='/api/negocioyProductos')
     app.register_blueprint(productos_bp, url_prefix='/api/productos')
     app.register_blueprint(pedidos_repartidor_bp, url_prefix='/api/pedidos')
+    app.register_blueprint(dashboard_admin_bp, url_prefix='/api/dashboard_admin')
 
 
     # Manejo de errores

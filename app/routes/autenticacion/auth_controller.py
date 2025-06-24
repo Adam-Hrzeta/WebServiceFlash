@@ -58,8 +58,8 @@ def registroNegocio():
             
             sql = """
                 INSERT INTO Negocio 
-                (nombre, correo, contrasena, telefono, direccion, descripcion, categoria)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                (nombre, correo, contrasena, telefono, direccion, descripcion, categoria, estado)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, 'pendiente')
             """
             cursor.execute(sql, (
                 data['nombre'],
@@ -160,8 +160,8 @@ def registroRepartidor():
             
             sql = """
                 INSERT INTO Repartidor 
-                (nombre, correo, telefono, fecha_nacimiento, contrasena, disponibilidad, tipo_servicio)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                (nombre, correo, telefono, fecha_nacimiento, contrasena, disponibilidad, tipo_servicio, estado)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, 'pendiente')
             """
             cursor.execute(sql, (
                 data['nombre'],
@@ -201,6 +201,8 @@ def login():
             cursor.execute("SELECT * FROM Negocio WHERE correo = %s", (data['correo'],))
             negocio = cursor.fetchone()
             if negocio and check_password_hash(negocio['contrasena'], data['contrasena']):
+                if negocio.get('estado') != 'aprobado':
+                    return jsonify({'error': 'Tu cuenta aún no ha sido aprobada por el administrador.'}), 403
                 identity = str(negocio['id'])
                 additional_claims = {
                     'correo': negocio['correo'],
@@ -241,11 +243,11 @@ def login():
                 }), 200
             # Si no es cliente, buscar en Repartidor
             cursor.execute("SELECT * FROM Repartidor WHERE correo = %s", (data['correo'],))
-            repartidor = cursor.fetchone()
-            if repartidor and check_password_hash(repartidor['contrasena'], data['contrasena']):
-                identity = str(repartidor['id'])
+            administrador = cursor.fetchone()
+            if administrador and check_password_hash(administrador['contrasena'], data['contrasena']):
+                identity = str(administrador['id'])
                 additional_claims = {
-                    'correo': repartidor['correo'],
+                    'correo': administrador['correo'],
                     'tipo_usuario': 'repartidor'
                 }
                 access_token = create_access_token(identity=identity, additional_claims=additional_claims)
@@ -254,11 +256,32 @@ def login():
                     'access_token': access_token,
                     'refresh_token': refresh_token,
                     'repartidor': {
-                        'id': repartidor['id'],
-                        'nombre': repartidor['nombre'],
-                        'correo': repartidor['correo']
+                        'id': administrador['id'],
+                        'nombre': administrador['nombre'],
+                        'correo': administrador['correo']
                     },
                     'tipo_usuario': 'repartidor' 
+                }), 200
+            # Si no es repartidor, buscar en administrador
+            cursor.execute("SELECT * FROM Administradores WHERE correo = %s", (data['correo'],))
+            administrador = cursor.fetchone()
+            if administrador and check_password_hash(administrador['contrasena'], data['contrasena']):
+                identity = str(administrador['id'])
+                additional_claims = {
+                    'correo': administrador['correo'],
+                    'tipo_usuario': 'administrador'
+                }
+                access_token = create_access_token(identity=identity, additional_claims=additional_claims)
+                refresh_token = create_refresh_token(identity=identity, additional_claims=additional_claims)
+                return jsonify({
+                    'access_token': access_token,
+                    'refresh_token': refresh_token,
+                    'administrador': {
+                        'id': administrador['id'],
+                        'nombre': administrador['nombre'],
+                        'correo': administrador['correo']
+                    },
+                    'tipo_usuario': 'administrador' 
                 }), 200
             # Si no se encontró en ninguna tabla
             return jsonify({'error': 'Credenciales inválidas'}), 401
