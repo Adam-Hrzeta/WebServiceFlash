@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt
 import pymysql
 from config import Config
 
@@ -18,6 +18,9 @@ def get_db():
 @dashboard_admin_bp.route('/negocios_pendientes', methods=['GET'])
 @jwt_required()
 def listar_negocios_pendientes():
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') not in ['admin', 'administrador']:
+        return jsonify({'error': 'No autorizado'}), 403
     conn = get_db()
     try:
         with conn.cursor() as cursor:
@@ -35,6 +38,9 @@ def listar_negocios_pendientes():
 @dashboard_admin_bp.route('/repartidores_pendientes', methods=['GET'])
 @jwt_required()
 def listar_repartidores_pendientes():
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') not in ['admin', 'administrador']:
+        return jsonify({'error': 'No autorizado'}), 403
     conn = get_db()
     try:
         with conn.cursor() as cursor:
@@ -53,6 +59,9 @@ def listar_repartidores_pendientes():
 @dashboard_admin_bp.route('/aprobar_negocio/<int:negocio_id>', methods=['POST'])
 @jwt_required()
 def aprobar_negocio(negocio_id):
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') not in ['admin', 'administrador']:
+        return jsonify({'error': 'No autorizado'}), 403
     conn = get_db()
     try:
         with conn.cursor() as cursor:
@@ -66,6 +75,9 @@ def aprobar_negocio(negocio_id):
 @dashboard_admin_bp.route('/rechazar_negocio/<int:negocio_id>', methods=['POST'])
 @jwt_required()
 def rechazar_negocio(negocio_id):
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') not in ['admin', 'administrador']:
+        return jsonify({'error': 'No autorizado'}), 403
     conn = get_db()
     try:
         with conn.cursor() as cursor:
@@ -79,6 +91,9 @@ def rechazar_negocio(negocio_id):
 @dashboard_admin_bp.route('/aprobar_repartidor/<int:repartidor_id>', methods=['POST'])
 @jwt_required()
 def aprobar_repartidor(repartidor_id):
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') not in ['admin', 'administrador']:
+        return jsonify({'error': 'No autorizado'}), 403
     conn = get_db()
     try:
         with conn.cursor() as cursor:
@@ -92,6 +107,9 @@ def aprobar_repartidor(repartidor_id):
 @dashboard_admin_bp.route('/rechazar_repartidor/<int:repartidor_id>', methods=['POST'])
 @jwt_required()
 def rechazar_repartidor(repartidor_id):
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') not in ['admin', 'administrador']:
+        return jsonify({'error': 'No autorizado'}), 403
     conn = get_db()
     try:
         with conn.cursor() as cursor:
