@@ -75,11 +75,15 @@ def negocio_profile():
     conn = get_db()
     try:
         with conn.cursor() as cursor:
-            cursor.execute("SELECT id, nombre, categoria, telefono, correo, descripcion, direccion, profile_image FROM Negocio WHERE id = %s", (identity,))
+            cursor.execute("SELECT id, nombre, categoria, telefono, correo, descripcion, direccion, disponibilidad, profile_image FROM Negocio WHERE id = %s", (identity,))
             negocio = cursor.fetchone()
 
             if not negocio:
                 return jsonify({'error': 'Negocio no encontrado'}), 404
+
+            # Convertir disponibilidad a booleano
+            if 'disponibilidad' in negocio:
+                negocio['disponibilidad'] = bool(negocio['disponibilidad'])
 
             if negocio['profile_image']:
                 from flask import request as flask_request
@@ -110,7 +114,7 @@ def editar_perfil_negocio():
     conn = get_db()
     try:
         with conn.cursor() as cursor:
-            cursor.execute("SELECT nombre, categoria, telefono, correo, descripcion, direccion FROM Negocio WHERE id = %s", (identity,))
+            cursor.execute("SELECT nombre, categoria, telefono, correo, descripcion, direccion, disponibilidad FROM Negocio WHERE id = %s", (identity,))
             actual = cursor.fetchone()
             if not actual:
                 return jsonify({'error': 'Negocio no encontrado'}), 404
@@ -121,19 +125,23 @@ def editar_perfil_negocio():
             correo = data.get('correo', actual['correo'])
             descripcion = data.get('descripcion', actual['descripcion'])
             direccion = data.get('direccion', actual['direccion'])
+            disponibilidad = data.get('disponibilidad', actual['disponibilidad'])
             cursor.execute(
-                "UPDATE Negocio SET nombre = %s, categoria = %s, telefono = %s, correo = %s, descripcion = %s, direccion = %s WHERE id = %s",
-                (nombre, categoria, telefono, correo, descripcion, direccion, identity)
+                "UPDATE Negocio SET nombre = %s, categoria = %s, telefono = %s, correo = %s, descripcion = %s, direccion = %s, disponibilidad = %s WHERE id = %s",
+                (nombre, categoria, telefono, correo, descripcion, direccion, disponibilidad, identity)
             )
             conn.commit()
             cursor.execute(
-                "SELECT id, nombre, categoria, telefono, correo, descripcion, direccion FROM Negocio WHERE id = %s",
+                "SELECT id, nombre, categoria, telefono, correo, descripcion, direccion, disponibilidad FROM Negocio WHERE id = %s",
                 (identity,)
             )
             negocio = cursor.fetchone()
             if not negocio:
                 return jsonify({'error': 'Negocio no encontrado'}), 404
             negocio['avatar'] = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
+            # Convertir disponibilidad a booleano
+            if 'disponibilidad' in negocio:
+                negocio['disponibilidad'] = bool(negocio['disponibilidad'])
             return jsonify({'negocio': negocio})
     finally:
         conn.close()
