@@ -39,7 +39,7 @@ def obtener_negocios():
         cursor = connection.cursor(dictionary=True)
         query = """
         SELECT id, nombre, correo, telefono, direccion, descripcion, 
-               disponibilidad, tipo_entrega,
+               disponibilidad, tipo_entrega, categoria,
                CASE WHEN profile_image IS NOT NULL THEN CONCAT('/api/perfilNegocio/profile_image?id=', id) ELSE NULL END as avatar
         FROM Negocio
         """
