@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
 from app.models.model_pedido import PedidoCreate, DetallePedido
-from flask_jwt_extended import jwt_required, get_jwt_identity
 import pymysql
 from config import Config
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 pedidos_cliente_bp = Blueprint('pedidos_cliente', __name__)
 
@@ -29,15 +29,10 @@ def realizar_pedido():
     try:
         with conn.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO pedidos (cliente_id, total, fecha) VALUES (%s, %s, NOW())",
+                "INSERT INTO Pedidos (cliente_id, total, fecha) VALUES (%s, %s, NOW())",
                 (cliente_id, total)
             )
             pedido_id = cursor.lastrowid
-            for prod in productos:
-                cursor.execute(
-                    "INSERT INTO detalles_pedido (pedido_id, producto_id, cantidad, precio_unitario) VALUES (%s, %s, %s, %s)",
-                    (pedido_id, prod['id'], prod['cantidad'], prod['precio'])
-                )
         conn.commit()
         return jsonify({'status': 'success', 'pedido_id': pedido_id})
     except Exception as e:
