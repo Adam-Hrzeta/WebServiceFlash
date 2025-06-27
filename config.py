@@ -33,3 +33,9 @@ class Config:
     # Configuración EL NUMERO DE PETICIONES POR MINUTO 60 REQUEST/PETICIONES POR MINUTO/ 60 SEGUNDOS
     RATE_LIMIT_REQUESTS = int(os.getenv('RATE_LIMIT_REQUESTS', 60)) 
     RATE_LIMIT_WINDOW = int(os.getenv('RATE_LIMIT_WINDOW', 60))  # en segundos
+
+    # Configuración de SQLAlchemy
+    SQLALCHEMY_DATABASE_URI = (
+        f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    )
+    SQLALCHEMY_TRACK_MODIFICATIONS = False

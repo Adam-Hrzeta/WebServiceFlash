@@ -10,7 +10,7 @@ class ClienteBase(BaseModel):
     fecha_nacimiento: Optional[datetime] = None
 
 class ClienteCreate(ClienteBase):
-    contrasena: constr
+    contrasena: str  # Cambiado a str para evitar errores de Pydantic
 
 class ClienteLogin(BaseModel):
     correo: EmailStr

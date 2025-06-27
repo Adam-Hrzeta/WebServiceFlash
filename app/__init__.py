@@ -4,8 +4,10 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from config import Config
 from app.routes.autenticacion.auth_controller import jwt_blacklist
+from flask_sqlalchemy import SQLAlchemy
 
 jwt = JWTManager()
+db = SQLAlchemy()
 
 @jwt.token_in_blocklist_loader  # Corregido el nombre del decorador
 def check_if_token_in_blacklist(jwt_header, jwt_payload):
@@ -15,6 +17,7 @@ def check_if_token_in_blacklist(jwt_header, jwt_payload):
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    db.init_app(app)
 
     # Inicializar extensiones
     CORS(app)
@@ -80,6 +83,7 @@ def create_app():
     from app.routes.dashboardNegocio.productos_controller import productos_bp
     from app.routes.dashboardRepartidor.pedidos_repartidor_controller import pedidos_repartidor_bp
     from app.routes.dashboardAdmin.dashboard_admin_controller import dashboard_admin_bp
+    from app.routes.dashboardCliente.pedidos_cliente import pedidos_cliente_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(perfil_negocio_bp, url_prefix='/api/perfilNegocio')
@@ -90,6 +94,7 @@ def create_app():
     app.register_blueprint(productos_bp, url_prefix='/api/productos')
     app.register_blueprint(pedidos_repartidor_bp, url_prefix='/api/pedidos')
     app.register_blueprint(dashboard_admin_bp, url_prefix='/api/dashboard_admin')
+    app.register_blueprint(pedidos_cliente_bp, url_prefix='/api/pedidos_cliente')
 
 
     # Manejo de errores
