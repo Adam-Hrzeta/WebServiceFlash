@@ -85,7 +85,7 @@ def create_app():
     from app.routes.dashboardAdmin.dashboard_admin_controller import dashboard_admin_bp
     from app.routes.dashboardCliente.pedidos_cliente import pedidos_cliente_bp
 
-    app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    app.register_blueprint(auth_bp, url_prefix='/api/auth') #comentario
     app.register_blueprint(perfil_negocio_bp, url_prefix='/api/perfilNegocio')
     app.register_blueprint(perfil_cliente_bp, url_prefix='/api/perfilCliente')
     app.register_blueprint(perfil_repartidor_bp, url_prefix='/api/perfilRepartidor')
