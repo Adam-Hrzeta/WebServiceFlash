@@ -27,7 +27,10 @@ def listar_pedidos_pendientes():
     try:
         with conn.cursor() as cursor:
             cursor.execute("""
-                SELECT * FROM Pedidos WHERE negocio_id = %s AND estatus = 'pendiente'
+                SELECT p.*, c.nombre AS cliente_nombre
+                FROM Pedidos p
+                JOIN Cliente c ON p.cliente_id = c.id
+                WHERE p.negocio_id = %s AND p.estatus = 'pendiente'
             """, (identity,))
             pedidos = cursor.fetchall()
         return jsonify({'pedidos': pedidos})

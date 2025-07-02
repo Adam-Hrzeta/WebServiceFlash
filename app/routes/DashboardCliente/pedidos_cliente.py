@@ -23,19 +23,18 @@ def realizar_pedido():
     productos = data.get('productos', [])
     total = data.get('total', 0)
     negocio_id = data.get('negocio_id')
+    direccion_entrega = data.get('direccion_entrega')
     cliente_id = get_jwt_identity()
-    print(f"[DEBUG] negocio_id recibido: {negocio_id}, cliente_id: {cliente_id}")
-    if not productos or not cliente_id or not negocio_id:
+    if not productos or not cliente_id or not negocio_id or not direccion_entrega:
         return jsonify({'status': 'error', 'message': 'Datos incompletos'}), 400
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO Pedidos (cliente_id, negocio_id, total, fecha) VALUES (%s, %s, %s, NOW())",
-                (cliente_id, negocio_id, total)
+                "INSERT INTO Pedidos (cliente_id, negocio_id, total, fecha, direccion_entrega) VALUES (%s, %s, %s, NOW(), %s)",
+                (cliente_id, negocio_id, total, direccion_entrega)
             )
             pedido_id = cursor.lastrowid
-            print(f"[DEBUG] Pedido insertado con id: {pedido_id} para negocio_id: {negocio_id}")
         conn.commit()
         return jsonify({'status': 'success', 'pedido_id': pedido_id})
     except Exception as e:
@@ -52,7 +51,13 @@ def historial_pedidos():
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM Pedidos WHERE cliente_id = %s ORDER BY fecha DESC", (cliente_id,))
+            cursor.execute("""
+                SELECT p.id, p.negocio_id, n.nombre AS negocio_nombre, p.total, p.fecha, p.estatus, p.direccion_entrega
+                FROM Pedidos p
+                JOIN Negocio n ON p.negocio_id = n.id
+                WHERE p.cliente_id = %s
+                ORDER BY p.fecha DESC
+            """, (cliente_id,))
             pedidos = cursor.fetchall()
         return jsonify({'pedidos': pedidos})
     finally:
