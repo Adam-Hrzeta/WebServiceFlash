@@ -66,7 +66,11 @@ def create_app():
                 "Dashboard Admin (aprobar negocio)": "/api/dashboard_admin/aprobar_negocio/<negocio_id>",
                 "Dashboard Admin (rechazar negocio)": "/api/dashboard_admin/rechazar_negocio/<negocio_id>",
                 "Dashboard Admin (aprobar repartidor)": "/api/dashboard_admin/aprobar_repartidor/<repartidor_id>",
-                "Dashboard Admin (rechazar repartidor)": "/api/dashboard_admin/rechazar_repartidor/<repartidor_id>"
+                "Dashboard Admin (rechazar repartidor)": "/api/dashboard_admin/rechazar_repartidor/<repartidor_id>",
+                "Pedidos Negocio (pendientes)": "/api/pedidos_negocio/pedidos_pendientes",
+                "Pedidos Negocio (aceptar)": "/api/pedidos_negocio/aceptar_pedido/<pedido_id>",
+                "Pedidos Negocio (enviar)": "/api/pedidos_negocio/enviar_pedido/<pedido_id>",
+                "Pedidos Negocio (entregado)": "/api/pedidos_negocio/marcar_entregado/<pedido_id>"
             }
         })
 
@@ -81,6 +85,7 @@ def create_app():
     from app.routes.dashboardRepartidor.pedidos_repartidor_controller import pedidos_repartidor_bp
     from app.routes.dashboardAdmin.dashboard_admin_controller import dashboard_admin_bp
     from app.routes.dashboardCliente.pedidos_cliente import pedidos_cliente_bp
+    from app.routes.dashboardNegocio.gestion_pedidos_controller import pedidos_negocio_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(perfil_negocio_bp, url_prefix='/api/perfilNegocio')
@@ -92,6 +97,7 @@ def create_app():
     app.register_blueprint(pedidos_repartidor_bp, url_prefix='/api/pedidos')
     app.register_blueprint(dashboard_admin_bp, url_prefix='/api/dashboard_admin')
     app.register_blueprint(pedidos_cliente_bp, url_prefix='/api/pedidos_cliente')
+    app.register_blueprint(pedidos_negocio_bp, url_prefix='/api/pedidos_negocio')
 
 
     # Manejo de errores

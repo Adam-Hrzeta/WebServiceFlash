@@ -1,0 +1,145 @@
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+import pymysql
+from config import Config
+
+# Blueprint para gestión de pedidos del negocio
+pedidos_negocio_bp = Blueprint('pedidos_negocio_bp', __name__)
+
+def get_db():
+    return pymysql.connect(
+        host=Config.DB_HOST,
+        user=Config.DB_USER,
+        password=Config.DB_PASSWORD,
+        db=Config.DB_NAME,
+        cursorclass=pymysql.cursors.DictCursor
+    )
+
+# 1. Listar pedidos pendientes para el negocio
+@pedidos_negocio_bp.route('/pedidos_pendientes', methods=['GET'])
+@jwt_required()
+def listar_pedidos_pendientes():
+    identity = get_jwt_identity()
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') != 'negocio':
+        return jsonify({'error': 'No autorizado'}), 403
+    conn = get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT * FROM Pedidos WHERE negocio_id = %s AND estatus = 'pendiente'
+            """, (identity,))
+            pedidos = cursor.fetchall()
+        return jsonify({'pedidos': pedidos})
+    finally:
+        conn.close()
+
+# 2. Cambiar estatus a 'preparando' (aceptar pedido)
+@pedidos_negocio_bp.route('/aceptar_pedido/<int:pedido_id>', methods=['POST'])
+@jwt_required()
+def aceptar_pedido(pedido_id):
+    identity = get_jwt_identity()
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') != 'negocio':
+        return jsonify({'error': 'No autorizado'}), 403
+    conn = get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                UPDATE Pedidos SET estatus = 'preparando' WHERE id = %s AND negocio_id = %s
+            """, (pedido_id, identity))
+            conn.commit()
+        return jsonify({'mensaje': 'Pedido aceptado y en preparación'})
+    finally:
+        conn.close()
+
+# 3. Cambiar estatus a 'enviado'
+@pedidos_negocio_bp.route('/enviar_pedido/<int:pedido_id>', methods=['POST'])
+@jwt_required()
+def enviar_pedido(pedido_id):
+    identity = get_jwt_identity()
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') != 'negocio':
+        return jsonify({'error': 'No autorizado'}), 403
+    conn = get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                UPDATE Pedidos SET estatus = 'enviado' WHERE id = %s AND negocio_id = %s
+            """, (pedido_id, identity))
+            conn.commit()
+        return jsonify({'mensaje': 'Pedido marcado como enviado'})
+    finally:
+        conn.close()
+
+# 4. Cambiar estatus a 'entregado' (cuando el cliente confirma)
+@pedidos_negocio_bp.route('/marcar_entregado/<int:pedido_id>', methods=['POST'])
+@jwt_required()
+def marcar_entregado(pedido_id):
+    identity = get_jwt_identity()
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') != 'negocio':
+        return jsonify({'error': 'No autorizado'}), 403
+    conn = get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                UPDATE Pedidos SET estatus = 'entregado' WHERE id = %s AND negocio_id = %s
+            """, (pedido_id, identity))
+            conn.commit()
+        return jsonify({'mensaje': 'Pedido marcado como entregado'})
+    finally:
+        conn.close()
+
+# Endpoint para ver todos los pedidos del negocio (historial)
+@pedidos_negocio_bp.route('/todos', methods=['GET'])
+@jwt_required()
+def listar_todos_pedidos():
+    identity = get_jwt_identity()
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') != 'negocio':
+        return jsonify({'error': 'No autorizado'}), 403
+    conn = get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM Pedidos WHERE negocio_id = %s ORDER BY fecha DESC", (identity,))
+            pedidos = cursor.fetchall()
+        return jsonify({'pedidos': pedidos})
+    finally:
+        conn.close()
+
+# Endpoint para ver detalles de un pedido específico
+@pedidos_negocio_bp.route('/detalle/<int:pedido_id>', methods=['GET'])
+@jwt_required()
+def detalle_pedido(pedido_id):
+    identity = get_jwt_identity()
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') != 'negocio':
+        return jsonify({'error': 'No autorizado'}), 403
+    conn = get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM Pedidos WHERE id = %s AND negocio_id = %s", (pedido_id, identity))
+            pedido = cursor.fetchone()
+        return jsonify({'pedido': pedido})
+    finally:
+        conn.close()
+
+# Endpoint para cambiar estatus a 'en_camino' (pedido salió para entrega)
+@pedidos_negocio_bp.route('/en_camino/<int:pedido_id>', methods=['POST'])
+@jwt_required()
+def pedido_en_camino(pedido_id):
+    identity = get_jwt_identity()
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') != 'negocio':
+        return jsonify({'error': 'No autorizado'}), 403
+    conn = get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                UPDATE Pedidos SET estatus = 'en_camino' WHERE id = %s AND negocio_id = %s
+            """, (pedido_id, identity))
+            conn.commit()
+        return jsonify({'mensaje': 'Pedido marcado como en camino'})
+    finally:
+        conn.close()
