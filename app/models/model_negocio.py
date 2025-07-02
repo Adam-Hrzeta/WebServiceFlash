@@ -25,4 +25,4 @@ class NegocioResponse(NegocioBase):
     fecha_actualizacion: datetime
 
     class Config:
-        from_attributes = True 
+        from_attributes = True
