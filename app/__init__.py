@@ -108,6 +108,7 @@ def create_app():
     from app.routes.perfil_Repartidor.pedidos_repartidor_controller import pedidos_repartidor_bp
     from app.routes.administracion.dashboard_admin_controller import dashboard_admin_bp
     from app.routes.perfil_Cliente.pedidos_cliente import pedidos_cliente_bp
+    from app.routes.perfil_Negocio.productos_controller import productos_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(perfil_negocio_bp, url_prefix='/api/perfilNegocio')
@@ -119,6 +120,7 @@ def create_app():
     app.register_blueprint(dashboard_admin_bp, url_prefix='/api/dashboard_admin')
     app.register_blueprint(pedidos_cliente_bp, url_prefix='/api/pedidos_cliente')
     app.register_blueprint(pedidos_negocio_bp, url_prefix='/api/pedidos_negocio')
+    app.register_blueprint(productos_bp, url_prefix='/api/productos')
 
 
     # Manejo de errores
