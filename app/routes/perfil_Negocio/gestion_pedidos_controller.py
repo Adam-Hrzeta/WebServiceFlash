@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 import pymysql
 from config import Config
+import json
 
 # Blueprint para gestión de pedidos del negocio
 pedidos_negocio_bp = Blueprint('pedidos_negocio_bp', __name__)
