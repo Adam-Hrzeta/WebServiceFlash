@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 import pymysql
 from config import Config
 import json
+import base64
 
 # Blueprint para gestión de pedidos del negocio
 pedidos_negocio_bp = Blueprint('pedidos_negocio_bp', __name__)
@@ -34,6 +35,20 @@ def listar_pedidos_pendientes():
                 WHERE p.negocio_id = %s AND p.estatus = 'pendiente'
             """, (identity,))
             pedidos = cursor.fetchall()
+            # Para cada pedido, obtener los productos
+            for pedido in pedidos:
+                cursor.execute("""
+                    SELECT dp.*, pr.nombre, pr.descripcion, pr.precio, pr.imagen
+                    FROM detalle_pedido dp
+                    JOIN Productos pr ON dp.producto_id = pr.id
+                    WHERE dp.pedido_id = %s
+                """, (pedido['id'],))
+                productos = cursor.fetchall()
+                # Convertir imagen a string si es bytes
+                for prod in productos:
+                    if isinstance(prod.get('imagen'), bytes):
+                        prod['imagen'] = base64.b64encode(prod['imagen']).decode('utf-8')
+                pedido['productos'] = productos
         return jsonify({'pedidos': pedidos})
     finally:
         conn.close()

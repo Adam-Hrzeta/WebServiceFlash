@@ -35,6 +35,19 @@ def realizar_pedido():
                 (cliente_id, negocio_id, total, direccion_entrega)
             )
             pedido_id = cursor.lastrowid
+
+            # Insertar productos en detalle_pedido (acepta producto_id o id, y precio_unitario o precio)
+            for prod in productos:
+                producto_id = prod.get('producto_id') or prod.get('id')
+                cantidad = prod.get('cantidad')
+                precio_unitario = prod.get('precio_unitario') or prod.get('precio')
+                if not producto_id or cantidad is None or precio_unitario is None:
+                    print(f"[ERROR] Producto inválido: {prod}")
+                    continue
+                cursor.execute(
+                    "INSERT INTO detalle_pedido (pedido_id, producto_id, cantidad, precio_unitario) VALUES (%s, %s, %s, %s)",
+                    (pedido_id, producto_id, cantidad, precio_unitario)
+                )
         conn.commit()
         return jsonify({'status': 'success', 'pedido_id': pedido_id})
     except Exception as e:
