@@ -17,7 +17,7 @@ def get_db():
         cursorclass=pymysql.cursors.DictCursor
     )
 
-# 1. Listar pedidos pendientes para el negocio
+# 1. Listar pedidos pendientes y preparando para el negocio
 @pedidos_negocio_bp.route('/pedidos_pendientes', methods=['GET'])
 @jwt_required()
 def listar_pedidos_pendientes():
@@ -32,7 +32,7 @@ def listar_pedidos_pendientes():
                 SELECT p.*, c.nombre AS cliente_nombre
                 FROM Pedidos p
                 JOIN Cliente c ON p.cliente_id = c.id
-                WHERE p.negocio_id = %s AND p.estatus = 'pendiente'
+                WHERE p.negocio_id = %s AND (p.estatus = 'pendiente' OR p.estatus = 'preparando')
             """, (identity,))
             pedidos = cursor.fetchall()
             # Para cada pedido, obtener los productos
