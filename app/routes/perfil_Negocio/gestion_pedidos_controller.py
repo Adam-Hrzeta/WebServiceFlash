@@ -32,7 +32,7 @@ def listar_pedidos_pendientes():
                 SELECT p.*, c.nombre AS cliente_nombre
                 FROM Pedidos p
                 JOIN Cliente c ON p.cliente_id = c.id
-                WHERE p.negocio_id = %s AND (p.estatus = 'pendiente' OR p.estatus = 'preparando')
+                WHERE p.negocio_id = %s AND (p.estatus = 'pendiente' OR p.estatus = 'preparando' OR p.estatus = 'enviado' OR p.estatus = 'en_camino' OR p.estatus = 'entregado')
             """, (identity,))
             pedidos = cursor.fetchall()
             # Para cada pedido, obtener los productos
