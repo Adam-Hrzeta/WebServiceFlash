@@ -72,6 +72,16 @@ def historial_pedidos():
                 ORDER BY p.fecha DESC
             """, (cliente_id,))
             pedidos = cursor.fetchall()
+            # Para cada pedido, obtener los productos asociados
+            for pedido in pedidos:
+                cursor.execute("""
+                    SELECT d.producto_id, pr.nombre, d.cantidad, d.precio_unitario
+                    FROM detalle_pedido d
+                    JOIN Productos pr ON d.producto_id = pr.id
+                    WHERE d.pedido_id = %s
+                """, (pedido['id'],))
+                productos = cursor.fetchall()
+                pedido['productos'] = productos
         return jsonify({'pedidos': pedidos})
     finally:
         conn.close()
