@@ -75,19 +75,24 @@ def aceptar_pedido(pedido_id):
 # 3. Cambiar estatus a 'enviado'
 @pedidos_negocio_bp.route('/enviar_pedido/<int:pedido_id>', methods=['POST'])
 @jwt_required()
-def enviar_pedido(pedido_id):
+def enviar_pedido_con_repartidor(pedido_id):
     identity = get_jwt_identity()
     claims = get_jwt()
     if not claims or claims.get('tipo_usuario') != 'negocio':
         return jsonify({'error': 'No autorizado'}), 403
+    data = request.get_json()
+    repartidor_id = data.get('repartidor_id')
+    if not repartidor_id:
+        return jsonify({'error': 'Falta repartidor_id'}), 400
     conn = get_db()
     try:
         with conn.cursor() as cursor:
-            cursor.execute("""
-                UPDATE Pedidos SET estatus = 'enviado' WHERE id = %s AND negocio_id = %s
-            """, (pedido_id, identity))
+            cursor.execute(
+                "UPDATE Pedidos SET estatus = 'enviado', repartidor_id = %s WHERE id = %s AND negocio_id = %s",
+                (repartidor_id, pedido_id, identity)
+            )
             conn.commit()
-        return jsonify({'mensaje': 'Pedido marcado como enviado'})
+        return jsonify({'mensaje': 'Pedido enviado con repartidor'})
     finally:
         conn.close()
 
