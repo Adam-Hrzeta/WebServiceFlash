@@ -88,7 +88,7 @@ def negocio_profile():
             if negocio['profile_image']:
                 from flask import request as flask_request
                 base_url = flask_request.host_url.rstrip('/')
-                negocio['avatar'] = f"{base_url}/api/perfilNegocio/profile_image?id={negocio['id']}"
+                negocio['avatar'] = f"{base_url}/api/negocio/profile_image?id={negocio['id']}"
             else:
                 negocio['avatar'] = None
 
@@ -143,5 +143,49 @@ def editar_perfil_negocio():
             if 'disponibilidad' in negocio:
                 negocio['disponibilidad'] = bool(negocio['disponibilidad'])
             return jsonify({'negocio': negocio})
+    finally:
+        conn.close()
+
+@perfil_negocio_bp.route('/solicitudes_aliados', methods=['GET'])
+@jwt_required()
+def solicitudes_aliados():
+    identity = get_jwt_identity()
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') != 'negocio':
+        return jsonify({'error': 'No autorizado'}), 403
+    conn = get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT s.id, s.repartidor_id, r.nombre AS repartidor_nombre, s.estatus, s.fecha
+                FROM SolicitudAliado s
+                JOIN Repartidor r ON s.repartidor_id = r.id
+                WHERE s.negocio_id = %s
+                ORDER BY s.fecha DESC
+            """, (identity,))
+            solicitudes = cursor.fetchall()
+        return jsonify({'solicitudes': solicitudes})
+    finally:
+        conn.close()
+
+@perfil_negocio_bp.route('/solicitud_aliado/<int:solicitud_id>/<accion>', methods=['POST'])
+@jwt_required()
+def accion_solicitud_aliado(solicitud_id, accion):
+    identity = get_jwt_identity()
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') != 'negocio':
+        return jsonify({'error': 'No autorizado'}), 403
+    if accion not in ['aceptar', 'rechazar']:
+        return jsonify({'error': 'Acción inválida'}), 400
+    nuevo_estatus = 'aceptada' if accion == 'aceptar' else 'rechazada'
+    conn = get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "UPDATE SolicitudAliado SET estatus = %s WHERE id = %s AND negocio_id = %s",
+                (nuevo_estatus, solicitud_id, identity)
+            )
+            conn.commit()
+        return jsonify({'mensaje': f'Solicitud {nuevo_estatus}'})
     finally:
         conn.close()

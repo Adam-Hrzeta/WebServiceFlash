@@ -40,7 +40,7 @@ def obtener_negocios():
         query = """
         SELECT id, nombre, correo, telefono, direccion, descripcion, 
                disponibilidad, tipo_entrega, categoria,
-               CASE WHEN profile_image IS NOT NULL THEN CONCAT('/api/perfilNegocio/profile_image?id=', id) ELSE NULL END as avatar
+               CASE WHEN profile_image IS NOT NULL THEN CONCAT('/api/negocio/profile_image?id=', id) ELSE NULL END as avatar
         FROM Negocio
         """
         cursor.execute(query)
@@ -109,7 +109,8 @@ def crear_negocio():
             'mensaje': 'No se proporcionaron datos'
         }), 400
     
-    required_fields = ['nombre', 'correo', 'telefono', 'direccion', 'tipo_entrega', 'contrasena']
+    required_fields = ['nombre', 'correo', 'telefono', 'direccion', 'tipo_entrega', 'contrasena'
+    ]
     for field in required_fields:
         if field not in data:
             return jsonify({

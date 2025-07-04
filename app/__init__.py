@@ -111,7 +111,7 @@ def create_app():
     from app.routes.perfil_Negocio.productos_controller import productos_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
-    app.register_blueprint(perfil_negocio_bp, url_prefix='/api/perfilNegocio')
+    app.register_blueprint(perfil_negocio_bp, url_prefix='/api/negocio')
     app.register_blueprint(perfil_cliente_bp, url_prefix='/api/perfilCliente')
     app.register_blueprint(perfil_repartidor_bp, url_prefix='/api/perfilRepartidor')
     app.register_blueprint(dashboard_mostrar_negocios_bp, url_prefix='/api/dashboard_mostrar_negocios')

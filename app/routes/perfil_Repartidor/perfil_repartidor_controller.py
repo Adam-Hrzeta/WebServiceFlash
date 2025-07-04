@@ -127,3 +127,71 @@ def editar_perfil_repartidor():
             return jsonify({'repartidor': repartidor})
     finally:
         conn.close()
+
+@perfil_repartidor_bp.route('/cambiar_disponibilidad', methods=['POST'])
+@jwt_required()
+def cambiar_disponibilidad():
+    identity = get_jwt_identity()
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') != 'repartidor':
+        return jsonify({'error': 'No autorizado'}), 403
+    data = request.get_json()
+    nueva_disponibilidad = data.get('disponibilidad')
+    if nueva_disponibilidad not in ['disponible', 'no disponible']:
+        return jsonify({'error': 'Valor de disponibilidad inválido'}), 400
+    conn = get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("UPDATE Repartidor SET disponibilidad = %s WHERE id = %s", (nueva_disponibilidad, identity))
+            conn.commit()
+        return jsonify({'mensaje': 'Disponibilidad actualizada', 'disponibilidad': nueva_disponibilidad})
+    finally:
+        conn.close()
+
+@perfil_repartidor_bp.route('/buscarNegocios', methods=['GET'])
+@jwt_required()
+def buscar_negocios():
+    nombre = request.args.get('nombre', '')
+    conn = get_db()
+    try:
+        with conn.cursor() as cursor:
+            query = """
+                SELECT id, nombre, categoria, descripcion
+                FROM Negocio
+                WHERE LOWER(nombre) LIKE %s
+            """
+            like_pattern = f"%{nombre.lower()}%"
+            cursor.execute(query, (like_pattern,))
+            negocios = cursor.fetchall()
+        return jsonify({'negocios': negocios})
+    finally:
+        conn.close()
+
+@perfil_repartidor_bp.route('/solicitud_aliado', methods=['POST'])
+@jwt_required()
+def enviar_solicitud_aliado():
+    identity = get_jwt_identity()
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') != 'repartidor':
+        return jsonify({'error': 'No autorizado'}), 403
+    data = request.get_json()
+    negocio_id = data.get('negocio_id')
+    if not negocio_id:
+        return jsonify({'error': 'Falta negocio_id'}), 400
+    conn = get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                "SELECT id FROM SolicitudAliado WHERE repartidor_id = %s AND negocio_id = %s AND estatus = 'pendiente'",
+                (identity, negocio_id)
+            )
+            if cursor.fetchone():
+                return jsonify({'error': 'Ya existe una solicitud pendiente'}), 400
+            cursor.execute(
+                "INSERT INTO SolicitudAliado (repartidor_id, negocio_id, estatus) VALUES (%s, %s, 'pendiente')",
+                (identity, negocio_id)
+            )
+            conn.commit()
+        return jsonify({'mensaje': 'Solicitud enviada'}), 201
+    finally:
+        conn.close()
