@@ -1,9 +1,8 @@
-from flask import Blueprint, jsonify, request
+from app.routes.administracion.blueprints import dashboard_admin_bp
+from flask import jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt
 import pymysql
 from config import Config
-
-dashboard_admin_bp = Blueprint('dashboard_admin_bp', __name__)
 
 def get_db():
     return pymysql.connect(

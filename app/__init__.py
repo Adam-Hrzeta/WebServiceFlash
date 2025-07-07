@@ -97,7 +97,7 @@ def create_app():
             }
         })
 
-    # Registrar blueprints (es decir los archivos de python)
+    # Importar todos los blueprints y controladores después de crear la app, pero antes de registrar los blueprints
     from app.routes.autenticacion.auth_controller import auth_bp
     from app.routes.perfil_Negocio.perfil_negocio_controller import perfil_negocio_bp
     from app.routes.perfil_Cliente.perfil_cliente_controller import perfil_cliente_bp
@@ -109,7 +109,9 @@ def create_app():
     from app.routes.administracion.dashboard_admin_controller import dashboard_admin_bp
     from app.routes.perfil_Cliente.pedidos_cliente import pedidos_cliente_bp
     from app.routes.perfil_Negocio.productos_controller import productos_bp
+    from app.routes.administracion import usuarios_admin_controller
 
+    # Registrar blueprints (es decir los archivos de python)
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(perfil_negocio_bp, url_prefix='/api/negocio')
     app.register_blueprint(perfil_cliente_bp, url_prefix='/api/perfilCliente')
@@ -121,7 +123,6 @@ def create_app():
     app.register_blueprint(pedidos_cliente_bp, url_prefix='/api/pedidos_cliente')
     app.register_blueprint(pedidos_negocio_bp, url_prefix='/api/pedidos_negocio')
     app.register_blueprint(productos_bp, url_prefix='/api/productos')
-
 
     # Manejo de errores
     @app.errorhandler(404)
