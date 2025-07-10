@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from mysql.connector import connect, Error
 from config import Config
+from flask_jwt_extended import jwt_required, get_jwt
 
 dashboard_mostrar_negocios_bp = Blueprint('dashboard_mostrar_negocios_bp', __name__)
 
@@ -27,7 +28,13 @@ def test():
     })
 
 @dashboard_mostrar_negocios_bp.route('/dashboard_negocios', methods=['GET'])
+@jwt_required()
 def obtener_negocios():
+    claims = get_jwt()
+    print('JWT claims recibidos:', claims)  # LOG para depuración
+    if not claims or claims.get('tipo_usuario') != 'cliente':
+        print('Acceso denegado. Claims:', claims)  # LOG para depuración
+        return jsonify({'status': 'error', 'mensaje': 'No autorizado'}), 403
     connection = get_db_connection()
     if not connection:
         return jsonify({

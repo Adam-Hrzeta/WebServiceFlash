@@ -4,7 +4,8 @@ from flask_jwt_extended import (
     create_refresh_token,
     jwt_required,
     get_jwt_identity,
-    get_jwt
+    get_jwt,
+    JWTManager
 )
 import pymysql
 from config import Config
@@ -351,6 +352,14 @@ def login():
 
 # Blacklist simple en memoria para tokens JWT
 jwt_blacklist = set()
+
+# Inicializar JWTManager (asegúrate de tener esto en tu app principal)
+jwt = JWTManager()
+
+@jwt.token_in_blocklist_loader
+def check_if_token_in_blacklist(jwt_header, jwt_payload):
+    jti = jwt_payload["jti"]
+    return jti in jwt_blacklist
 
 # Endpoint logout
 @auth_bp.route('/logout', methods=['POST'])

@@ -60,6 +60,12 @@ def realizar_pedido():
 @pedidos_cliente_bp.route('/historial', methods=['GET'])
 @jwt_required()
 def historial_pedidos():
+    from flask_jwt_extended import get_jwt
+    claims = get_jwt()
+    print('JWT claims recibidos (historial):', claims)
+    if not claims or claims.get('tipo_usuario') != 'cliente':
+        print('Acceso denegado. Claims:', claims)
+        return jsonify({'status': 'error', 'mensaje': 'No autorizado'}), 403
     cliente_id = get_jwt_identity()
     conn = get_db_connection()
     try:
