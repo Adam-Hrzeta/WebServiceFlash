@@ -28,11 +28,11 @@ def listar_usuarios():
             # Clientes
             cursor.execute("SELECT id, nombre, correo, 'cliente' as tipo FROM Cliente")
             usuarios += cursor.fetchall()
-            # Negocios
-            cursor.execute("SELECT id, nombre, correo, 'negocio' as tipo FROM Negocio")
+            # Negocios aprobados
+            cursor.execute("SELECT id, nombre, correo, 'negocio' as tipo FROM Negocio WHERE estado = 'aprobado'")
             usuarios += cursor.fetchall()
-            # Repartidores
-            cursor.execute("SELECT id, nombre, correo, 'repartidor' as tipo FROM Repartidor")
+            # Repartidores aprobados
+            cursor.execute("SELECT id, nombre, correo, 'repartidor' as tipo FROM Repartidor WHERE estado = 'aprobado'")
             usuarios += cursor.fetchall()
         return jsonify(usuarios), 200
     finally:
