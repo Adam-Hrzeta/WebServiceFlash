@@ -49,16 +49,15 @@ def create_producto():
     descripcion = data.get('descripcion')
     precio = data.get('precio')
     categoria = data.get('categoria')
-    stock = data.get('stock', 0)
     imagen = request.files.get('imagen')
     imagen_data = imagen.read() if imagen else None
     conn = get_db()
     try:
         with conn.cursor() as cursor:
             cursor.execute("""
-                INSERT INTO Productos (negocio_id, nombre, descripcion, precio, categoria, stock, imagen, fecha_creacion)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            """, (identity, nombre, descripcion, precio, categoria, stock, imagen_data, datetime.now()))
+                INSERT INTO Productos (negocio_id, nombre, descripcion, precio, categoria, imagen, fecha_creacion)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (identity, nombre, descripcion, precio, categoria, imagen_data, datetime.now()))
             conn.commit()
         return jsonify({'mensaje': 'Producto creado exitosamente'}), 201
     finally:
@@ -91,7 +90,6 @@ def update_producto(producto_id):
     descripcion = data.get('descripcion')
     precio = data.get('precio')
     categoria = data.get('categoria')
-    stock = data.get('stock', 0)
     imagen = request.files.get('imagen')
     conn = get_db()
     try:
@@ -99,12 +97,12 @@ def update_producto(producto_id):
             if imagen:
                 imagen_data = imagen.read()
                 cursor.execute("""
-                    UPDATE Productos SET nombre=%s, descripcion=%s, precio=%s, categoria=%s, stock=%s, imagen=%s WHERE id=%s AND negocio_id=%s
-                """, (nombre, descripcion, precio, categoria, stock, imagen_data, producto_id, identity))
+                    UPDATE Productos SET nombre=%s, descripcion=%s, precio=%s, categoria=%s, imagen=%s WHERE id=%s AND negocio_id=%s
+                """, (nombre, descripcion, precio, categoria, imagen_data, producto_id, identity))
             else:
                 cursor.execute("""
-                    UPDATE Productos SET nombre=%s, descripcion=%s, precio=%s, categoria=%s, stock=%s WHERE id=%s AND negocio_id=%s
-                """, (nombre, descripcion, precio, categoria, stock, producto_id, identity))
+                    UPDATE Productos SET nombre=%s, descripcion=%s, precio=%s, categoria=%s WHERE id=%s AND negocio_id=%s
+                """, (nombre, descripcion, precio, categoria, producto_id, identity))
             conn.commit()
         return jsonify({'mensaje': 'Producto actualizado correctamente'}), 200
     finally:
