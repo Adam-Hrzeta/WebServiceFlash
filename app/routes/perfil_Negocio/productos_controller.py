@@ -27,9 +27,8 @@ def get_productos():
     conn = get_db()
     try:
         with conn.cursor() as cursor:
-            cursor.execute("SELECT id, nombre, descripcion, precio, categoria, stock, fecha_creacion FROM Productos WHERE negocio_id = %s", (identity,))
+            cursor.execute("SELECT id, nombre, descripcion, precio, categoria, stock, fecha_creacion, disponible FROM Productos WHERE negocio_id = %s", (identity,))
             productos = cursor.fetchall()
-            # Agregar imagen_url a cada producto
             for producto in productos:
                 producto['imagen_url'] = f"/api/productos/{producto['id']}/imagen"
         return jsonify(productos), 200
@@ -55,9 +54,9 @@ def create_producto():
     try:
         with conn.cursor() as cursor:
             cursor.execute("""
-                INSERT INTO Productos (negocio_id, nombre, descripcion, precio, categoria, imagen, fecha_creacion)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """, (identity, nombre, descripcion, precio, categoria, imagen_data, datetime.now()))
+                INSERT INTO Productos (negocio_id, nombre, descripcion, precio, categoria, imagen, fecha_creacion, disponible)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (identity, nombre, descripcion, precio, categoria, imagen_data, datetime.now(), True))
             conn.commit()
         return jsonify({'mensaje': 'Producto creado exitosamente'}), 201
     finally:
@@ -94,17 +93,41 @@ def update_producto(producto_id):
     conn = get_db()
     try:
         with conn.cursor() as cursor:
+            disponible = request.form.get('disponible')
+            disponible_val = None
+            if disponible is not None:
+                disponible_val = disponible.lower() in ['true', '1', 'yes']
             if imagen:
                 imagen_data = imagen.read()
                 cursor.execute("""
-                    UPDATE Productos SET nombre=%s, descripcion=%s, precio=%s, categoria=%s, imagen=%s WHERE id=%s AND negocio_id=%s
-                """, (nombre, descripcion, precio, categoria, imagen_data, producto_id, identity))
+                    UPDATE Productos SET nombre=%s, descripcion=%s, precio=%s, categoria=%s, imagen=%s{disponible_sql} WHERE id=%s AND negocio_id=%s
+                """.format(disponible_sql=", disponible=%s" if disponible_val is not None else ""),
+                    tuple([nombre, descripcion, precio, categoria, imagen_data] + ([disponible_val] if disponible_val is not None else []) + [producto_id, identity]))
             else:
                 cursor.execute("""
-                    UPDATE Productos SET nombre=%s, descripcion=%s, precio=%s, categoria=%s WHERE id=%s AND negocio_id=%s
-                """, (nombre, descripcion, precio, categoria, producto_id, identity))
+                    UPDATE Productos SET nombre=%s, descripcion=%s, precio=%s, categoria=%s{disponible_sql} WHERE id=%s AND negocio_id=%s
+                """.format(disponible_sql=", disponible=%s" if disponible_val is not None else ""),
+                    tuple([nombre, descripcion, precio, categoria] + ([disponible_val] if disponible_val is not None else []) + [producto_id, identity]))
             conn.commit()
         return jsonify({'mensaje': 'Producto actualizado correctamente'}), 200
+    finally:
+        conn.close()
+# Endpoint para cambiar disponibilidad
+@productos_bp.route('/<int:producto_id>/disponible', methods=['PUT'])
+@jwt_required()
+def set_disponible(producto_id):
+    identity = get_jwt_identity()
+    claims = get_jwt()
+    if not claims or claims.get('tipo_usuario') != 'negocio':
+        return jsonify({'error': 'No autorizado'}), 403
+    data = request.get_json()
+    disponible = data.get('disponible')
+    conn = get_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("UPDATE Productos SET disponible=%s WHERE id=%s AND negocio_id=%s", (disponible, producto_id, identity))
+            conn.commit()
+        return jsonify({'mensaje': 'Disponibilidad actualizada'}), 200
     finally:
         conn.close()
 

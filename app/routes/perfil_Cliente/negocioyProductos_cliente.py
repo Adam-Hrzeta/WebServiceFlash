@@ -74,7 +74,7 @@ def productos_por_negocio(negocio_id):
         cursor.execute("""
             SELECT id, nombre, descripcion, precio, categoria, stock, fecha_creacion
             FROM Productos
-            WHERE negocio_id = %s
+            WHERE negocio_id = %s AND (disponible IS NULL OR disponible = 1)
         """, (negocio_id,))
         productos = cursor.fetchall()
         

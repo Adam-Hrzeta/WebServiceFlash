@@ -126,8 +126,27 @@ def listar_todos_pedidos():
     conn = get_db()
     try:
         with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM Pedidos WHERE negocio_id = %s ORDER BY fecha DESC", (identity,))
+            cursor.execute("""
+                SELECT p.*, c.nombre AS cliente_nombre
+                FROM Pedidos p
+                JOIN Cliente c ON p.cliente_id = c.id
+                WHERE p.negocio_id = %s
+                ORDER BY p.fecha DESC
+            """, (identity,))
             pedidos = cursor.fetchall()
+            # Para cada pedido, obtener los productos
+            for pedido in pedidos:
+                cursor.execute("""
+                    SELECT dp.*, pr.nombre, pr.descripcion, pr.precio, pr.imagen
+                    FROM detalle_pedido dp
+                    JOIN Productos pr ON dp.producto_id = pr.id
+                    WHERE dp.pedido_id = %s
+                """, (pedido['id'],))
+                productos = cursor.fetchall()
+                for prod in productos:
+                    if isinstance(prod.get('imagen'), bytes):
+                        prod['imagen'] = base64.b64encode(prod['imagen']).decode('utf-8')
+                pedido['productos'] = productos
         return jsonify({'pedidos': pedidos})
     finally:
         conn.close()
