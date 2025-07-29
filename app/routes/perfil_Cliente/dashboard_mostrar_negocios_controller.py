@@ -49,6 +49,7 @@ def obtener_negocios():
                disponibilidad, tipo_entrega, categoria,
                CASE WHEN profile_image IS NOT NULL THEN CONCAT('/api/negocio/profile_image?id=', id) ELSE NULL END as avatar
         FROM Negocio
+        WHERE estado = 'aprobado'
         """
         cursor.execute(query)
         negocios = cursor.fetchall()
