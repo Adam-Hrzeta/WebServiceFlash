@@ -1,3 +1,4 @@
+from app.routes.administracion import usuarios_admin_controller, dashboard_admin_controller
 # app/__init__.py
 # Archivo principal de configuración y arranque de la aplicación Flask
 from flask import Flask, jsonify, redirect  # Importación de Flask y utilidades
@@ -88,7 +89,6 @@ def create_app():
     from app.routes.perfil_Cliente.negocioyProductos_cliente import negocioyProductos_dashboardClientes_bp  # Perfil público de negocios y productos
     from app.routes.perfil_Negocio.gestion_pedidos_controller import pedidos_negocio_bp  # Gestión de pedidos para negocios
     from app.routes.perfil_Repartidor.pedidos_repartidor_controller import pedidos_repartidor_bp  # Pedidos asignados a repartidores
-    from app.routes.administracion.dashboard_admin_controller import dashboard_admin_bp  # Dashboard de administración
     from app.routes.perfil_Cliente.pedidos_cliente import pedidos_cliente_bp  # Pedidos realizados por clientes
     from app.routes.perfil_Negocio.productos_controller import productos_bp  # Gestión de productos
     from app.routes.administracion.blueprints import dashboard_admin_bp  # Blueprint para administración (incluye usuarios admin)
