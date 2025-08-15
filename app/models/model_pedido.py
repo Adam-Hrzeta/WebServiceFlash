@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from datetime import datetime
 
 class DetallePedido(BaseModel):
@@ -12,6 +12,7 @@ class PedidoCreate(BaseModel):
     total: float
     detalles: List[DetallePedido]
     fecha: datetime = datetime.utcnow()
+    comentario: Optional[str] = None  # Nuevo campo para comentarios
 
 class PedidoResponse(BaseModel):
     id: int
@@ -19,6 +20,7 @@ class PedidoResponse(BaseModel):
     total: float
     fecha: datetime
     detalles: List[DetallePedido]
+    comentario: Optional[str] = None  # Nuevo campo para comentarios
 
     class Config:
         from_attributes = True

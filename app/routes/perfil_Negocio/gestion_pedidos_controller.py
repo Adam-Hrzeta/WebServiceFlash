@@ -127,7 +127,7 @@ def listar_todos_pedidos():
     try:
         with conn.cursor() as cursor:
             cursor.execute("""
-                SELECT p.*, c.nombre AS cliente_nombre
+                SELECT p.*, c.nombre AS cliente_nombre, p.comentario
                 FROM Pedidos p
                 JOIN Cliente c ON p.cliente_id = c.id
                 WHERE p.negocio_id = %s

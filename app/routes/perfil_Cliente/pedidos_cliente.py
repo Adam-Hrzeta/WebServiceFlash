@@ -24,6 +24,7 @@ def realizar_pedido():
     total = data.get('total', 0)
     negocio_id = data.get('negocio_id')
     direccion_entrega = data.get('direccion_entrega')
+    comentario = data.get('comentario')  # Nuevo campo para comentarios
     cliente_id = get_jwt_identity()
     if not productos or not cliente_id or not negocio_id or not direccion_entrega:
         return jsonify({'status': 'error', 'message': 'Datos incompletos'}), 400
@@ -31,8 +32,8 @@ def realizar_pedido():
     try:
         with conn.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO Pedidos (cliente_id, negocio_id, total, fecha, direccion_entrega) VALUES (%s, %s, %s, NOW(), %s)",
-                (cliente_id, negocio_id, total, direccion_entrega)
+                "INSERT INTO Pedidos (cliente_id, negocio_id, total, fecha, direccion_entrega, comentario) VALUES (%s, %s, %s, NOW(), %s, %s)",
+                (cliente_id, negocio_id, total, direccion_entrega, comentario)
             )
             pedido_id = cursor.lastrowid
 
@@ -71,7 +72,7 @@ def historial_pedidos():
     try:
         with conn.cursor() as cursor:
             cursor.execute("""
-                SELECT p.id, p.negocio_id, n.nombre AS negocio_nombre, p.total, p.fecha, p.estatus, p.direccion_entrega
+                SELECT p.id, p.negocio_id, n.nombre AS negocio_nombre, p.total, p.fecha, p.estatus, p.direccion_entrega, p.comentario
                 FROM Pedidos p
                 JOIN Negocio n ON p.negocio_id = n.id
                 WHERE p.cliente_id = %s

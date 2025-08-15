@@ -33,7 +33,7 @@ def obtener_pedidos_asignados():
                 FROM Pedidos p
                 JOIN Cliente c ON p.cliente_id = c.id
                 JOIN Negocio n ON p.negocio_id = n.id
-                WHERE p.repartidor_id = %s
+                WHERE p.repartidor_id = %s AND p.estatus != 'entregado'  -- Excluir pedidos entregados
             """, (identity,))
             pedidos = cursor.fetchall()
             # Para cada pedido, obtener los productos
